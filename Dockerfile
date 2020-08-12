@@ -23,6 +23,7 @@ RUN apt-get update \
  && gem install fluent-plugin-gelf-hs \
  && gem install fluent-plugin-splunk-hec \
  && gem install fluent-plugin-input-gelf \
+ && gem uninstall tzinfo -v 2.0.2 \
  && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch" \
  && wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch.asc" \
