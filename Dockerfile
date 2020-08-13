@@ -20,6 +20,9 @@ RUN apt-get update \
  && gem install async-http -v 0.50.7 \
  && gem install ext_monitor -v 0.1.2 \
  && gem install fluentd -v 1.10.4 \
+ #
+ # CHANGES: following gem commands are all divergent from original Dockerfile
+ #
  && gem install fluent-plugin-gelf-hs \
  && gem install fluent-plugin-splunk-hec \
  && gem install fluent-plugin-input-gelf \
@@ -43,12 +46,15 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
-RUN groupadd -r fluent && useradd -r -g fluent fluent \
+#
+# CHANGES: modify primary GID 0 of user fluent to be root
+# 
+RUN useradd -r -g root fluent \
     # for log storage (maybe shared with host)
     && mkdir -p /fluentd/log \
     # configuration/plugins path (default: copied from .)
     && mkdir -p /fluentd/etc /fluentd/plugins \
-    && chown -R fluent /fluentd && chgrp -R fluent /fluentd
+    && chown -R fluent:root /fluentd
 
 
 COPY fluent.conf /fluentd/etc/
@@ -58,6 +64,7 @@ RUN chmod +x /bin/entrypoint.sh
 ENV FLUENTD_CONF="fluent.conf"
 
 ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
+
 EXPOSE 24224 5140
 
 USER fluent
