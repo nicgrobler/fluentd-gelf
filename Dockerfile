@@ -26,6 +26,7 @@ RUN apt-get update \
  && gem install fluent-plugin-gelf-hs \
  && gem install fluent-plugin-splunk-hec \
  && gem install fluent-plugin-input-gelf \
+ && gem install fluent-plugin-syslog-tls \
  && gem uninstall tzinfo -v 2.0.2 \
  && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch" \
@@ -55,7 +56,6 @@ RUN useradd -r -g root fluent \
     # configuration/plugins path (default: copied from .)
     && mkdir -p /fluentd/etc /fluentd/plugins \
     && chown -R fluent:root /fluentd
-
 
 COPY fluent.conf /fluentd/etc/
 COPY entrypoint.sh /bin/
