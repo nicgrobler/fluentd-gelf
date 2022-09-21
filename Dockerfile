@@ -29,10 +29,8 @@ RUN apt-get update \
  && gem install fluent-plugin-remote_syslog \
  && gem install fluent-plugin-syslog-tls \
  && gem uninstall tzinfo -v 2.0.2 \
- && gem install fluent-plugin-prometheus
-
-
-RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+ && gem install fluent-plugin-prometheus \
+ && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch" \
  && wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
