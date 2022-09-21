@@ -1,7 +1,7 @@
-FROM ruby:2.6-slim-buster
-LABEL maintainer "Fluentd developers <fluentd@googlegroups.com>"
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.10.4"
-ENV TINI_VERSION=0.18.0
+FROM ruby:2.7-slim-buster
+LABEL maintainer "Nic Grobler"
+LABEL Description="Fluentd docker image" Vendor="NA" Version="1.5.0"
+ENV TINI_VERSION=0.19.0
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
@@ -19,7 +19,7 @@ RUN apt-get update \
  && gem install json -v 2.3.0 \
  && gem install async-http -v 0.50.7 \
  && gem install ext_monitor -v 0.1.2 \
- && gem install fluentd -v 1.10.4 \
+ && gem install fluentd -v 1.15 \
  #
  # CHANGES: following gem commands are all divergent from original Dockerfile
  #
@@ -29,11 +29,14 @@ RUN apt-get update \
  && gem install fluent-plugin-remote_syslog \
  && gem install fluent-plugin-syslog-tls \
  && gem uninstall tzinfo -v 2.0.2 \
- && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+ && gem install fluent-plugin-prometheus
+
+
+RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch" \
  && wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini-$dpkgArch.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
- && gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
+ && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
  && gpg --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini \
  && rm -r /usr/local/bin/tini.asc \
  && chmod +x /usr/local/bin/tini \
